@@ -7,6 +7,8 @@ import {FormattedMessage} from 'react-intl';
 
 import PermissionGroup from './permission_group.jsx';
 
+import EditPostTimeLimitButton from './edit_post_time_limit_button';
+
 const GROUPS = [
     {
         id: 'teams',
@@ -73,6 +75,12 @@ const GROUPS = [
     },
 ];
 
+const ADDITIONAL_VALUES = {
+    edit_post: {
+        editTimeLimitButton: <EditPostTimeLimitButton/>,
+    },
+};
+
 export default class PermissionsTree extends React.Component {
     static propTypes = {
         scope: PropTypes.string.isRequired,
@@ -122,6 +130,7 @@ export default class PermissionsTree extends React.Component {
                         selectRow={this.props.selectRow}
                         readOnly={this.props.readOnly}
                         permissions={GROUPS}
+                        additionalValues={ADDITIONAL_VALUES}
                         role={this.props.role}
                         parentRole={this.props.parentRole}
                         scope={this.props.scope}

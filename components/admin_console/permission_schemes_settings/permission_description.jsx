@@ -16,6 +16,7 @@ export class PermissionDescription extends React.Component {
         rowType: PropTypes.string.isRequired,
         inherited: PropTypes.object,
         selectRow: PropTypes.func.isRequired,
+        additionalValues: PropTypes.object,
     };
 
     constructor(props) {
@@ -38,7 +39,10 @@ export class PermissionDescription extends React.Component {
     }
 
     parentPermissionClicked = (e) => {
-        if (e.target.tagName === 'A') {
+        const isInheritLink = e.target.parentElement.parentElement.className === 'inherit-link-wrapper';
+        if (e.target.parentElement.className !== 'permission-description' && !isInheritLink) {
+            e.stopPropagation();
+        } else if (isInheritLink) {
             this.props.selectRow(this.props.id);
             e.stopPropagation();
         }
@@ -50,18 +54,33 @@ export class PermissionDescription extends React.Component {
         let content = '';
         if (inherited) {
             content = (
-                <FormattedHTMLMessage
-                    id='admin.permissions.inherited_from'
-                    values={{
-                        name: this.props.intl.formatMessage({
-                            id: 'admin.permissions.roles.' + inherited.name + '.name',
-                            defaultMessage: inherited.display_name,
-                        }),
-                    }}
-                />
+                <span className='inherit-link-wrapper'>
+                    <FormattedHTMLMessage
+                        id='admin.permissions.inherited_from'
+                        values={{
+                            name: this.props.intl.formatMessage({
+                                id: 'admin.permissions.roles.' + inherited.name + '.name',
+                                defaultMessage: inherited.display_name,
+                            }),
+                        }}
+                    />
+                </span>
             );
         } else {
-            content = <FormattedMessage id={'admin.permissions.' + rowType + '.' + id + '.description'}/>;
+            content = (
+                <FormattedMessage
+                    id={'admin.permissions.' + rowType + '.' + id + '.description'}
+                    values={this.props.additionalValues}
+                />
+            );
+        }
+        let tooltip = (
+            <Tooltip id={this.id}>
+                {content}
+            </Tooltip>
+        );
+        if (content.props.values && Object.keys(content.props.values).length > 0) {
+            tooltip = null;
         }
         content = (
             <span
@@ -78,9 +97,7 @@ export class PermissionDescription extends React.Component {
                     placement='top'
                     target={this.refs.content}
                 >
-                    <Tooltip id={this.id}>
-                        {content}
-                    </Tooltip>
+                    {tooltip}
                 </Overlay>
             </span>
         );
