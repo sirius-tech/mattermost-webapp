@@ -75,9 +75,16 @@ export class PermissionDescription extends React.Component {
             );
         }
         let tooltip = (
-            <Tooltip id={this.id}>
-                {content}
-            </Tooltip>
+            <Overlay
+                show={this.state.open}
+                delayShow={Constants.OVERLAY_TIME_DELAY}
+                placement='top'
+                target={this.refs.content}
+            >
+                <Tooltip id={this.id}>
+                    {content}
+                </Tooltip>
+            </Overlay>
         );
         if (content.props.values && Object.keys(content.props.values).length > 0) {
             tooltip = null;
@@ -91,14 +98,7 @@ export class PermissionDescription extends React.Component {
                 onMouseOut={this.closeTooltip}
             >
                 {content}
-                <Overlay
-                    show={this.state.open}
-                    delayShow={Constants.OVERLAY_TIME_DELAY}
-                    placement='top'
-                    target={this.refs.content}
-                >
-                    {tooltip}
-                </Overlay>
+                {tooltip}
             </span>
         );
 

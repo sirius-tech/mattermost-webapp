@@ -10,19 +10,8 @@ import {Constants} from 'utils/constants';
 export default class EditPostTimeLimitButton extends React.Component {
     static propTypes = {
         timeLimit: PropTypes.number.isRequired,
-        actions: PropTypes.shape({
-        }).isRequired,
+        onClick: PropTypes.func,
     };
-
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-
-    onClick = (e) => {
-        console.count('clicked');
-    }
 
     render = () => {
         let messageID;
@@ -35,7 +24,7 @@ export default class EditPostTimeLimitButton extends React.Component {
         return (
             <button
                 className='edit-post-time-limit-button'
-                onClick={this.onClick}
+                onClick={this.props.onClick}
             >
                 <FormattedMessage
                     id={messageID}
