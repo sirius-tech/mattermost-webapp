@@ -94,7 +94,7 @@ export default class PermissionsTree extends React.Component {
     };
 
     onClickEditPostTimeLimitButton = () => {
-        this.setState({editTimeLimitModalIsVisible: !this.state.editTimeLimitModalIsVisible});
+        this.setState({editTimeLimitModalIsVisible: true});
     }
 
     constructor() {
@@ -150,7 +150,10 @@ export default class PermissionsTree extends React.Component {
                         root={true}
                     />
                 </div>
-                <EditPostTimeLimitModal show={this.state.editTimeLimitModalIsVisible}/>
+                <EditPostTimeLimitModal
+                    onClose={() => this.setState({editTimeLimitModalIsVisible: false})}
+                    show={this.state.editTimeLimitModalIsVisible}
+                />
             </div>
         );
     };
