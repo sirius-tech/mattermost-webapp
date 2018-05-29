@@ -6,15 +6,65 @@ import PropTypes from 'prop-types';
 import {FormattedMessage} from 'react-intl';
 import {Modal} from 'react-bootstrap';
 
+import {Constants} from 'utils/constants';
+
+const INT32_MAX = 2147483647;
+
 export default class EditPostTimeLimitModal extends React.Component {
     static propTypes = {
-        timeLimit: PropTypes.number.isRequired,
+        config: PropTypes.object.isRequired,
         show: PropTypes.bool,
         onClose: PropTypes.func.isRequired,
+        actions: PropTypes.shape({
+            updateConfig: PropTypes.func.isRequired,
+        }).isRequired,
     };
 
-    save = () => {
-        console.log('TODO: Save it.');
+    constructor(props) {
+        super(props);
+        this.state = {
+            postEditTimeLimit: parseInt(props.config.PostEditTimeLimit, 10),
+            saving: false,
+            errorMessage: '',
+        };
+    }
+
+    save = async () => {
+        this.setState({saving: true});
+
+        let val;
+
+        try {
+            val = parseInt(this.state.postEditTimeLimit, 10);
+        } catch (e) {
+            this.setState({errorMessage: e.message, saving: false});
+            return false;
+        }
+
+        const {data, error: err} = await this.props.actions.updateConfig({...this.props.config, PostEditTimeLimit: val});
+        this.setState({saving: false});
+
+        if (err) {
+            this.setState({errorMessage: err});
+        } else {
+            this.props.onClose();
+        }
+
+        return true;
+    }
+
+    handleOptionChange = (e) => {
+        const {value} = e.target;
+        if (value === Constants.ALLOW_EDIT_POST_ALWAYS) {
+            this.setState({postEditTimeLimit: Constants.UNSET_POST_EDIT_TIME_LIMIT});
+        } else {
+            this.setState({postEditTimeLimit: null});
+        }
+    }
+
+    handleSecondsChange = (e) => {
+        const {value} = e.target;
+        this.setState({postEditTimeLimit: value});
     }
 
     render = () => {
@@ -43,7 +93,9 @@ export default class EditPostTimeLimitModal extends React.Component {
                             id='anytime'
                             type='radio'
                             name='limit'
-                            value='anytime'
+                            value={Constants.ALLOW_EDIT_POST_ALWAYS}
+                            checked={this.state.postEditTimeLimit === Constants.UNSET_POST_EDIT_TIME_LIMIT}
+                            onChange={this.handleOptionChange}
                         />
                         <label htmlFor='anytime'>
                             <FormattedMessage
@@ -57,7 +109,9 @@ export default class EditPostTimeLimitModal extends React.Component {
                             id='timelimit'
                             type='radio'
                             name='limit'
-                            value='timelimit'
+                            value={Constants.ALLOW_EDIT_POST_TIME_LIMIT}
+                            checked={this.state.postEditTimeLimit !== Constants.UNSET_POST_EDIT_TIME_LIMIT}
+                            onChange={this.handleOptionChange}
                         />
                         <label htmlFor='timelimit'>
                             <FormattedMessage
@@ -67,7 +121,12 @@ export default class EditPostTimeLimitModal extends React.Component {
                         </label>
                         <input
                             type='number'
+                            min='0'
+                            step='1'
+                            max={INT32_MAX}
                             id='editPostTimeLimit'
+                            readOnly={this.state.postEditTimeLimit === Constants.UNSET_POST_EDIT_TIME_LIMIT}
+                            onChange={this.handleSecondsChange}
                         />
                         <label htmlFor='timelimit'>
                             <FormattedMessage
@@ -82,6 +141,9 @@ export default class EditPostTimeLimitModal extends React.Component {
                     />
                 </Modal.Body>
                 <Modal.Footer>
+                    <div className='edit-post-time-limit-modal__error'>
+                        {this.state.errorMessage}
+                    </div>
                     <button
                         type='button'
                         className='btn btn-cancel'
@@ -97,9 +159,10 @@ export default class EditPostTimeLimitModal extends React.Component {
                         type='button'
                         className='btn btn-default'
                         onClick={this.save}
+                        disabled={this.state.saving}
                     >
                         <FormattedMessage
-                            id='edit_post.time_limit_modal.save_button'
+                            id={this.state.saving ? 'save_button.saving' : 'edit_post.time_limit_modal.save_button'}
                             defaultMessage='Save Edit Time'
                         />
                     </button>

@@ -5,21 +5,23 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {updateConfig} from 'mattermost-redux/actions/admin';
 
 import EditPostTimeLimitModal from './edit_post_time_limit_modal';
 
 function mapStateToProps(state, ownProps) {
-    const {PostEditTimeLimit} = getConfig(state);
+    const config = getConfig(state);
 
     return {
         ...ownProps,
-        timeLimit: parseInt(PostEditTimeLimit, 10),
+        config,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
+            updateConfig,
         }, dispatch),
     };
 }
