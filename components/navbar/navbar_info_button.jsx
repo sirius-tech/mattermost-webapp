@@ -6,7 +6,7 @@ import React from 'react';
 import {OverlayTrigger, Popover} from 'react-bootstrap';
 import {FormattedMessage} from 'react-intl';
 
-import MessageWrapper from 'components/message_wrapper.jsx';
+import MessageWrapper from 'components/message_wrapper';
 import InfoIcon from 'components/svg/info_icon';
 
 export default class NavbarInfoButton extends React.PureComponent {

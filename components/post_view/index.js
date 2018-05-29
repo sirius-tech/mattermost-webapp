@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getPosts, getPostsAfter, getPostsBefore, getPostThread} from 'mattermost-redux/actions/posts';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {makeGetPostsAroundPost, makeGetPostsInChannel} from 'mattermost-redux/selectors/entities/posts';
 import {get} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
@@ -30,6 +31,7 @@ function makeMapStateToProps() {
         }
 
         return {
+            autolinkingSchemes: getConfig(state).AutolinkingSchemes,
             channel: getChannel(state, ownProps.channelId) || {},
             lastViewedAt: state.views.channel.lastChannelViewTime[ownProps.channelId],
             posts,

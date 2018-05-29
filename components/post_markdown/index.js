@@ -27,6 +27,7 @@ function mapStateToProps(state) {
     const config = getConfig(state);
 
     return {
+        autolinkingSchemes: config.AutolinkingSchemes,
         channelNamesMap: getChannelNamesMap(state),
         mentionKeys: getCurrentUserMentionKeys(state),
         siteURL: getSiteURL(),

@@ -10,14 +10,20 @@ import {getSiteURL} from 'utils/url.jsx';
 import * as Utils from 'utils/utils.jsx';
 
 export default class MessageWrapper extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+    static propTypes = {
+        autolinkingSchemes: PropTypes.array,
+        message: PropTypes.string,
+        options: PropTypes.object
+    };
+
+    static defaultProps = {
+        message: ''
+    };
 
     render() {
         if (this.props.message) {
             const options = Object.assign({}, this.props.options, {
+                autolinkingSchemes,
                 siteURL: getSiteURL(),
             });
 
@@ -33,11 +39,3 @@ export default class MessageWrapper extends React.Component {
         return <div/>;
     }
 }
-
-MessageWrapper.defaultProps = {
-    message: '',
-};
-MessageWrapper.propTypes = {
-    message: PropTypes.string,
-    options: PropTypes.object,
-};

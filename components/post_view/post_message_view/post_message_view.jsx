@@ -161,11 +161,28 @@ export default class PostMessageView extends React.PureComponent {
         );
     }
 
+    renderContents = () => {
+        if (this.props.post) {
+            const renderedSystemMessage = renderSystemMessage(this.props.post, this.props.options);
+            if (renderedSystemMessage) {
+                return <div>{renderedSystemMessage}</div>;
+            }
+        }
+
+        return (
+            <PostMarkdown
+                message={message}
+                isRHS={isRHS}
+                options={options}
+                post={post}
+            />
+        );
+    };
+
     render() {
         const {
             post,
             enableFormatting,
-            options,
             pluginPostTypes,
             compactDisplay,
             isRHS,
@@ -244,6 +261,7 @@ export default class PostMessageView extends React.PureComponent {
             className += ' post-message--overflow';
         }
 
+
         return (
             <div className={className}>
                 <div
@@ -255,12 +273,7 @@ export default class PostMessageView extends React.PureComponent {
                         className='post-message__text'
                         onClick={Utils.handleFormattedTextClick}
                     >
-                        <PostMarkdown
-                            message={message}
-                            isRHS={isRHS}
-                            options={options}
-                            post={post}
-                        />
+                        {this.renderContents()}
                     </div>
                     {this.renderEditedIndicator()}
                 </div>

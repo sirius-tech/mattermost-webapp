@@ -9,7 +9,7 @@ import * as TextFormatting from 'utils/text_formatting.jsx';
 
 import {renderSystemMessage} from './system_message_helpers.jsx';
 
-export default class PostMarkdown extends React.PureComponent {
+export default class Markdown extends React.PureComponent {
     static propTypes = {
 
         /*
@@ -81,6 +81,12 @@ export default class PostMarkdown extends React.PureComponent {
             proxyImages: this.props.hasImageProxy && (!this.props.post || !this.props.post.message_source || this.props.post.message === this.props.post.message_source),
         }, this.props.options);
 
+        if (this.props.post) {
+            const renderedSystemMessage = renderSystemMessage(this.props.post, options);
+            if (renderedSystemMessage) {
+                return <div>{renderedSystemMessage}</div>;
+            }
+        }
 
         const htmlFormattedText = TextFormatting.formatText(this.props.message, options);
         return messageHtmlToComponent(htmlFormattedText, this.props.isRHS);

@@ -12,6 +12,7 @@ import {canManageMembers} from 'utils/channel_utils.jsx';
 import {formatText} from 'utils/text_formatting.jsx';
 import * as Utils from 'utils/utils.jsx';
 
+import Markdown from 'components/markdown';
 import CombinedSystemMessage from 'components/post_view/combined_system_message';
 import PostAddChannelMember from 'components/post_view/post_add_channel_member';
 
@@ -28,7 +29,12 @@ function renderUsernameForUserIdAndUsername(userId, username, options) {
 }
 
 function renderFormattedText(value, options) {
-    return <span dangerouslySetInnerHTML={{__html: formatText(value, options)}}/>;
+    return (
+        <Markdown
+            message={value}
+            options={options}
+        />
+    );
 }
 
 function renderJoinChannelMessage(post, options) {
